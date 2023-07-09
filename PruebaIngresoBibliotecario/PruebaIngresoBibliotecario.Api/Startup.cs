@@ -12,6 +12,7 @@ using Application.Contratos;
 using Infrastructure.Adapters;
 using Application.Utils;
 using Application.Implementacion;
+using Domain.Entities;
 
 namespace PruebaIngresoBibliotecario.Api
 {
@@ -41,8 +42,8 @@ namespace PruebaIngresoBibliotecario.Api
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
             services.AddTransient<ILibroRepository, LibroRepository>();
             services.AddTransient<IPrestamoRepository, PrestamoRepository>();
-            services.AddTransient<IMapping, AutoMapperImplementation>();
-            services.AddTransient<PrestamoCalculador>();
+            services.AddTransient<IMapping, AutoMapperImplementation>();           
+            services.AddTransient<Prestamo>();
             services.AddTransient<IPrestamoService, PrestamoService>();
 
 

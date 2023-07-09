@@ -14,16 +14,16 @@ namespace Application.Implementacion
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapping _mapping;
-        private readonly PrestamoCalculador _prestamoCalculador;
+        private readonly Prestamo _prestamo;
 
         public PrestamoService(   
             IUnitOfWork unitOfWork,
-            IMapping mapping,
-            PrestamoCalculador prestamoCalculador)
+            IMapping mapping,           
+            Prestamo prestamo)
         {
             _unitOfWork = unitOfWork;
-            _mapping = mapping;
-            _prestamoCalculador = prestamoCalculador;
+            _mapping = mapping;            
+            _prestamo = prestamo;
         }
 
         public async Task<Prestamo> GetPrestamoAsync(Guid idPrestamo)
@@ -36,7 +36,7 @@ namespace Application.Implementacion
             try
             {
                 //validar que el usuario invitado solo tenga un prestamo
-                var usuarioInvitadoTienePrestamos = await _prestamoCalculador.ValidarPrestamosInvitado(createPrestamoDTO.TipoUsuario, createPrestamoDTO.IdentificacionUsuario);
+                var usuarioInvitadoTienePrestamos = await _prestamo.ValidarPrestamosInvitado(createPrestamoDTO.TipoUsuario, createPrestamoDTO.IdentificacionUsuario);
                 if (usuarioInvitadoTienePrestamos)
                 {
                     return new ResponseServiceDTO
@@ -53,7 +53,7 @@ namespace Application.Implementacion
                 // calcular fecha de devolucion
                 Prestamo prestamo = _mapping.Map<Prestamo, CreatePrestamoDTO>(createPrestamoDTO);
                 prestamo.Id = Guid.NewGuid();
-                prestamo.FechaMaximaDevolucion = _prestamoCalculador.CalcularFechaDevolucion(createPrestamoDTO.TipoUsuario);
+                prestamo.FechaMaximaDevolucion = _prestamo.CalcularFechaDevolucion(createPrestamoDTO.TipoUsuario);
                 await _unitOfWork.PrestamoRepository.AddPrestamoAsync(prestamo);
                 var result = await _unitOfWork.SaveAsync();
                 if (result <= 0)
